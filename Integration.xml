@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin name="Integration" version_long="10000" version_human="1.0.0" author="ShroN" website="" update_check=""><hooks><hook type="C" class="\IPS\Api\Controller" filename="ApiIntegration"><![CDATA[//<?php
+
+/* To prevent PHP errors (extending class does not exist) revealing path */
+
+use IPS\Api\Response;
+use IPS\Member;
+use IPS\Request;
+
+if ( !\defined( '\IPS\SUITE_UNIQUE_KEY' ) )
+{
+	exit;
+}
+
+abstract class hook14 extends _HOOK_CLASS_
+{
+
+    /**
+     * POST /core/members/{id}/integrations
+     *
+     *
+     * @param		int		id
+     * @apiparam	string	service
+     * @apiparam	bool	action          true: add | false: remove
+     * @return		Response
+     */
+    public function POSTitem_integrations(int $id)
+    {
+	try
+	{
+	        $member = Member::load($id);
+	        $action = (bool) Request::i()->action;
+	        $service = (string) Request::i()->service;
+	
+	        if (!$action && $member->hasIntegration($service))
+	            $member->removeIntegration($service);
+	
+	        if ($action && !$member->hasIntegration($service))
+	            $member->addIntegration($service);
+	
+	        return new Response(200, json_encode(["member" => $id, "action" => $action, "service" => $service, "has" => $member->hasIntegration($service)]));
+	
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+
+}
+]]></hook><hook type="C" class="\IPS\Member" filename="Integration"><![CDATA[//<?php
+
+/* To prevent PHP errors (extending class does not exist) revealing path */
+if ( !\defined( '\IPS\SUITE_UNIQUE_KEY' ) )
+{
+	exit;
+}
+
+/**
+ * Class hook15
+ */
+class hook15 extends _HOOK_CLASS_
+{
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasIntegration(string $name): bool
+    {
+	try
+	{
+	        return (bool) array_search($name, $this->getIntegration()) != false;
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+
+    /**
+     * @return array
+     */
+    public function getIntegration(): array
+    {
+	try
+	{
+	        return \explode(",", $this->skript_integrations);
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+
+    /**
+     * @param array $integration
+     */
+    public function setIntegration(array $integration): void
+    {
+	try
+	{
+	        $this->skript_integrations = \implode(",", $integration);
+	        $this->save();
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+
+    /**
+     * @param string $name
+     */
+    public function addIntegration(string $name): void
+    {
+	try
+	{
+	        $integration = $this->getIntegration();
+	        $integration[] = $name;
+	        $this->setIntegration($integration);
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+
+    /**
+     * @param string $name
+     */
+    public function removeIntegration(string $name): void
+    {
+	try
+	{
+	        $integration = $this->getIntegration();
+	        $id = \array_search($name, $integration);
+	        unset($integration[$id]);
+	        $this->setIntegration($integration);
+	}
+	catch ( \RuntimeException $e )
+	{
+		if ( method_exists( get_parent_class(), __FUNCTION__ ) )
+		{
+			return \call_user_func_array( 'parent::' . __FUNCTION__, \func_get_args() );
+		}
+		else
+		{
+			throw $e;
+		}
+	}
+    }
+}
+]]></hook></hooks><settingsCode><![CDATA[//<?php
+
+$form->add( new \IPS\Helpers\Form\Text( 'plugin_example_setting', \IPS\Settings::i()->plugin_example_setting ) );
+
+if ( $values = $form->values() )
+{
+	$form->saveAsSettings();
+	return TRUE;
+}
+
+return $form;]]></settingsCode><tasks/><htmlFiles/><cssFiles/><jsFiles/><resourcesFiles/><lang/><versions/></plugin>

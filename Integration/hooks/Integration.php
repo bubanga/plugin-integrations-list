@@ -23,17 +23,17 @@ class hook15 extends _HOOK_CLASS_
     /**
      * @return array
      */
-    public function getIntegration(): array
+    public function getIntegrations(): array
     {
-        return \explode(",", $this->skript_integrations);
+        return explode(',', $this->skript_integrations);
     }
 
     /**
-     * @param array $integration
+     * @param array $integrations
      */
-    public function setIntegration(array $integration): void
+    public function setIntegrations(array $integrations): void
     {
-        $this->skript_integrations = \implode(",", $integration);
+        $this->skript_integrations = \implode(',', $integrations);
         $this->save();
     }
 
@@ -42,9 +42,9 @@ class hook15 extends _HOOK_CLASS_
      */
     public function addIntegration(string $name): void
     {
-        $integration = $this->getIntegration();
-        $integration[] = $name;
-        $this->setIntegration($integration);
+        $integrations = $this->getIntegrations();
+        $integrations[] = $name;
+        $this->setIntegrations($integrations);
     }
 
     /**
@@ -52,9 +52,9 @@ class hook15 extends _HOOK_CLASS_
      */
     public function removeIntegration(string $name): void
     {
-        $integration = $this->getIntegration();
-        $id = \array_search($name, $integration);
-        unset($integration[$id]);
-        $this->setIntegration($integration);
+        $integrations = $this->getIntegrations();
+        $id = array_search($name, $integrations);
+        unset($integrations[$id]);
+        $this->setIntegrations($integrations);
     }
 }

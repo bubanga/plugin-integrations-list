@@ -29,14 +29,15 @@ abstract class hook14 extends _HOOK_CLASS_
         $action = (bool) Request::i()->action;
         $service = (string) Request::i()->service;
 
-        if (!$action && $member->hasIntegration($service))
+        if (!$action && $member->hasIntegration($service)) {
             $member->removeIntegration($service);
+        }
 
-        if ($action && !$member->hasIntegration($service))
+        if ($action && !$member->hasIntegration($service)) {
             $member->addIntegration($service);
+        }
 
-        return new Response(200, json_encode(["member" => $id, "action" => $action, "service" => $service, "has" => $member->hasIntegration($service)]));
-
+        return new Response(202);
     }
 
 }

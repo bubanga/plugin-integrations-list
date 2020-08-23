@@ -18,11 +18,11 @@ class ips_plugins_setup_install
 {
 	public function step1()
 	{
-        Db::i()->addColumn("core_members", [
+	    Db::i()->addColumn('core_members', [
             'name' => 'skript_integrations',
             'type' => 'TEXT',
         ]);
 
-		return TRUE;
+	    return TRUE;
 	}
 }

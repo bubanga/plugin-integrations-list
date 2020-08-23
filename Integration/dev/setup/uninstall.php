@@ -18,8 +18,8 @@ class ips_plugins_setup_uninstall
 {
 	public function step1()
 	{
-        Db::i()->dropColumn("core_members", "skript_integrations");
+	    Db::i()->dropColumn('core_members', 'skript_integrations');
 
-		return TRUE;
+	    return TRUE;
 	}
 }
